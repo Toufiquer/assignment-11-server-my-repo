@@ -3,7 +3,7 @@ const cors = require("cors");
 require("dotenv").config();
 const port = process.env.PORT || 3500;
 const app = express();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 // Connect to react-app | middleware
 app.use(cors());
@@ -22,13 +22,29 @@ async function runDB() {
     try {
         await client.connect();
         console.log("mongodb connected");
-        const database = client.db("assignment-11").collection("Second-Users");
-        // Test
-        const data = { name: "name of the ", section: "section" };
-        const result = await database.insertOne(data);
-        console.log(
-            `A document was inserted with the _id: ${result.insertedId}`
-        );
+        const database = client.db("Assignment11").collection("AllFruits");
+        // Add New Product
+        app.post("/addProduct", async (req, res) => {
+            const productData = req.body;
+            database.insertOne(productData.userData);
+            res.send("Your Product is Successfully saved.");
+        });
+
+        // Get All Product
+        app.get("/products", async (req, res) => {
+            const query = {};
+            const cursor = database.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
+        // Delete User
+        app.delete("/products/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await database.deleteOne(query);
+            res.send(result);
+        });
     } finally {
         // await client.close();
     }
