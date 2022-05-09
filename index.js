@@ -45,6 +45,36 @@ async function runDB() {
             const result = await database.deleteOne(query);
             res.send(result);
         });
+
+        // Find One Data
+        app.get("/products/:id", async (req, res) => {
+            const id = req.params.id;
+            console.log(id);
+            const query = { _id: ObjectId(id) };
+            const result = await database.findOne(query);
+            res.send(result);
+        });
+
+        // Update || PUT
+        app.put("/products/:id", async (req, res) => {
+            const id = req.params.id;
+            const updateUser = req.body;
+            
+            const query = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    name: updateUser.name,
+                    email: updateUser.email,
+                },
+            };
+            console.log(updateDoc);
+            const result = await database.updateOne(query, updateDoc, options);
+            console.log(
+                `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`
+            );
+            res.send(result);
+        });
     } finally {
         // await client.close();
     }
