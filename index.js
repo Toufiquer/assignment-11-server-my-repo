@@ -70,8 +70,8 @@ async function runDB() {
         // Get All Product
         // Verify jwt is off
         app.get("/myItem", async (req, res) => {
-            const decodedEmail = req.decoded.email;
-            console.log(decodedEmail);
+            // const decodedEmail = req.decoded.email;
+            // console.log(decodedEmail);
             const email = req.query.email;
             let query = {};
             if (email) {
